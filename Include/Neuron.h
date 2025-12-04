@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <vector>
 #include "Connection.h"
+#include <fstream>
 
 class Network;
 
@@ -15,12 +16,19 @@ class Neuron {
             Network* const network
         );
 
+        Neuron(
+            Network* const network,
+            std::ifstream& file
+        );
+
         void connect(Neuron* const neuron);
         void setActivation(const double activation);
         void activate();
         double getActivation();
         void setTarget(const double target);
         void train();
+        std::size_t getID();
+        void save(std::ofstream& file);
 
     private:
 

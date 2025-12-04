@@ -20,6 +20,35 @@ Neuron::Neuron(
 {}
 
 // ================================================================================================
+// Construct a neuron from disk
+// ================================================================================================
+Neuron::Neuron(
+    Network* const network,
+    std::ifstream& file
+):
+    _network(network),
+    _id(_network->getNeuronCount()),
+    _bias([&file]{ double bias; file.read(reinterpret_cast<char*>(&bias), sizeof(bias)); return bias; }()),
+    _activation(0.0),
+    _delta(0.0)
+{
+
+    std::size_t connections;
+
+    file.read(reinterpret_cast<char*>(&connections), sizeof(connections));
+
+    for (std::size_t index = 0; index < connections; index++) {
+
+        Connection* const connection = _network->loadConnection(this, file);
+
+        connection->getSource()->_inputs.push_back(connection);
+        connection->getTarget()->_outputs.push_back(connection);
+
+    }
+
+}
+
+// ================================================================================================
 // Connect this neuron to another neuron
 // ================================================================================================
 void Neuron::connect(Neuron* const neuron) {
@@ -95,5 +124,32 @@ void Neuron::train() {
     _delta *= sigmoidDerivative(_activation);
 
     _bias += _network->getLearningRate() * _delta;
+
+}
+
+// ================================================================================================
+// Get the neuron ID
+// ================================================================================================
+std::size_t Neuron::getID() {
+
+    return _id;
+
+}
+
+// ================================================================================================
+// Save the neuron to disk
+// ================================================================================================
+void Neuron::save(std::ofstream& file) {
+
+    const std::size_t connections = _inputs.size();
+
+    file.write(reinterpret_cast<const char*>(&_bias), sizeof(_bias));
+    file.write(reinterpret_cast<const char*>(&connections), sizeof(connections));
+
+    for (auto& connection : _inputs) {
+
+        connection->save(file);
+
+    }
 
 }

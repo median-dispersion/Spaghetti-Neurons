@@ -21,6 +21,28 @@ Layer::Layer(
 }
 
 // ================================================================================================
+// Construct a layer from disk
+// ================================================================================================
+Layer::Layer(
+    Network* const network,
+    std::ifstream& file
+):
+    _network(network)
+{
+
+    std::size_t neurons;
+
+    file.read(reinterpret_cast<char*>(&neurons), sizeof(neurons));
+
+    for (std::size_t neuron = 0; neuron < neurons; neuron++) {
+
+        _neurons.push_back(_network->loadNeuron(file));
+
+    }
+
+}
+
+// ================================================================================================
 // Connect this layer to another layer
 // ================================================================================================
 void Layer::connect(Layer* const layer) {
@@ -113,6 +135,23 @@ void Layer::train() {
     for (auto& neuron : _neurons) {
 
         neuron->train();
+
+    }
+
+}
+
+// ================================================================================================
+// Save the layer to disk
+// ================================================================================================
+void Layer::save(std::ofstream& file) {
+
+    const std::size_t neurons = _neurons.size();
+
+    file.write(reinterpret_cast<const char*>(&neurons), sizeof(neurons));
+
+    for (auto& neuron : _neurons) {
+
+        neuron->save(file);
 
     }
 

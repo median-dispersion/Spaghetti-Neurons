@@ -1,6 +1,8 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
+#include <fstream>
+
 class Network;
 class Neuron;
 
@@ -14,10 +16,17 @@ class Connection {
             Neuron* const target
         );
 
+        Connection(
+            Network* const network,
+            Neuron* const source,
+            std::ifstream& file
+        );
+
         Neuron* getSource();
         Neuron* getTarget();
         double getWeight();
         void setWeight(const double weight);
+        void save(std::ofstream& file);
 
     private:
 

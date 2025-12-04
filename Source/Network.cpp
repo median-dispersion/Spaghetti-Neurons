@@ -30,6 +30,28 @@ Network::Network(
 }
 
 // ================================================================================================
+// Construct a network from disk
+// ================================================================================================
+Network::Network(
+    std::ifstream& file,
+    const double learningRate
+):
+    _learningRate(learningRate)
+{
+
+    std::size_t layers;
+
+    file.read(reinterpret_cast<char*>(&layers), sizeof(layers));
+
+    for (std::size_t layer = 0; layer < layers; layer++) {
+
+        loadLayer(file);
+
+    }
+
+}
+
+// ================================================================================================
 // Create a new layer in the network
 // ================================================================================================
 Layer* Network::createLayer(const std::size_t neurons) {
@@ -68,6 +90,15 @@ Connection* Network::createConnection(Neuron* const source, Neuron* const target
 std::size_t Network::getNeuronCount() {
 
     return _neurons.size();
+
+}
+
+// ================================================================================================
+// Get a pointer to a neuron
+// ================================================================================================
+Neuron* Network::getNeuron(const std::size_t id) {
+
+    return _neurons[id].get();
 
 }
 
@@ -136,5 +167,55 @@ double Network::getLoss(const std::vector<double>& inputs, const std::vector<dou
     }
 
     return loss;
+
+}
+
+// ================================================================================================
+// Save the network to disk
+// ================================================================================================
+void Network::save(std::ofstream& file) {
+
+    const std::size_t layers = _layers.size();
+
+    file.write(reinterpret_cast<const char*>(&layers), sizeof(layers));
+
+    for (auto& layer : _layers) {
+
+        layer->save(file);
+
+    }
+
+}
+
+// ================================================================================================
+// Load a layer from disk
+// ================================================================================================
+Layer* Network::loadLayer(std::ifstream& file) {
+
+    _layers.emplace_back(std::make_unique<Layer>(this, file));
+
+    return _layers.back().get();
+
+}
+
+// ================================================================================================
+// Load a neuron from disk
+// ================================================================================================
+Neuron* Network::loadNeuron(std::ifstream& file) {
+
+    _neurons.emplace_back(std::make_unique<Neuron>(this, file));
+
+    return _neurons.back().get();
+
+}
+
+// ================================================================================================
+// Load a connection from disk
+// ================================================================================================
+Connection* Network::loadConnection(Neuron* const source, std::ifstream& file) {
+
+    _connections.emplace_back(std::make_unique<Connection>(this, source, file));
+
+    return _connections.back().get();
 
 }

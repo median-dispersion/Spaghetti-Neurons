@@ -3,8 +3,10 @@
 #include <chrono>
 #include <cstddef>
 #include <iostream>
+#include <fstream>
 
 #define TRAINING_ITERATIONS 100000
+#define NETWORK_BINARY "network.sn"
 
 int main() {
 
@@ -17,12 +19,6 @@ int main() {
 
     for (std::size_t iteration = 0; iteration < TRAINING_ITERATIONS; iteration++) {
 
-        for (std::size_t index = 0; index < inputs.size(); index++) {
-
-            network.train(inputs[index], targets[index]);
-
-        }
-
         if (
             iteration == 0 ||
             iteration % (TRAINING_ITERATIONS / 10) == 0 ||
@@ -30,6 +26,12 @@ int main() {
         ) {
 
             std::cout << "Iteration " << iteration << " network loss: " << network.getLoss(inputs[0], targets[0]) << std::endl;
+
+        }
+
+        for (std::size_t index = 0; index < inputs.size(); index++) {
+
+            network.train(inputs[index], targets[index]);
 
         }
 
@@ -50,6 +52,9 @@ int main() {
         }
 
     }
+
+    std::ofstream output(NETWORK_BINARY, std::ios::binary);
+    network.save(output);
 
     return 0;
 
