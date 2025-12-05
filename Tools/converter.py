@@ -17,7 +17,14 @@ network = {
 
 with open(arguments.input, "rb") as file:
 
-    for l in range(struct.unpack("<Q", file.read(8))[0]):
+    layers = struct.unpack("<Q", file.read(8))[0]
+    inputs = struct.unpack("<Q", file.read(8))[0]
+
+    network["layers"].append({
+        "neurons": [{"bias": 0.0, "connections": []}] * inputs
+    })
+
+    for l in range(1, layers):
 
         layer = {
             "neurons": []

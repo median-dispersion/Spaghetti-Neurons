@@ -40,10 +40,14 @@ Network::Network(
 {
 
     std::size_t layers;
+    std::size_t inputs;
 
     file.read(reinterpret_cast<char*>(&layers), sizeof(layers));
+    file.read(reinterpret_cast<char*>(&inputs), sizeof(inputs));
 
-    for (std::size_t layer = 0; layer < layers; layer++) {
+    createLayer(inputs);
+
+    for (std::size_t layer = 1; layer < layers; layer++) {
 
         loadLayer(file);
 
@@ -176,12 +180,14 @@ double Network::getLoss(const std::vector<double>& inputs, const std::vector<dou
 void Network::save(std::ofstream& file) {
 
     const std::size_t layers = _layers.size();
+    const std::size_t inputs = _layers.front()->getNeuronCount();
 
     file.write(reinterpret_cast<const char*>(&layers), sizeof(layers));
+    file.write(reinterpret_cast<const char*>(&inputs), sizeof(inputs));
 
-    for (auto& layer : _layers) {
+    for (std::size_t layer = 1; layer < layers; layer++) {
 
-        layer->save(file);
+        _layers[layer]->save(file);
 
     }
 

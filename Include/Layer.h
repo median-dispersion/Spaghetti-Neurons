@@ -28,6 +28,7 @@ class Layer {
         std::vector<double> getActivations();
         void setTargets(const std::vector<double>& targets);
         void train();
+        std::size_t getNeuronCount();
         void save(std::ofstream& file);
 
     private:
