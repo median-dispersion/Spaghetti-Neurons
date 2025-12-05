@@ -1,0 +1,63 @@
+{
+    "layers": [
+        {
+            "neurons": [
+                {
+                    "bias": 0.0,
+                    "connections": []
+                },
+                {
+                    "bias": 0.0,
+                    "connections": []
+                }
+            ]
+        },
+        {
+            "neurons": [
+                {
+                    "bias": -4.880270086454882,
+                    "connections": [
+                        {
+                            "target": 0,
+                            "weight": 9.151708598088716
+                        },
+                        {
+                            "target": 1,
+                            "weight": -9.377061545081599
+                        }
+                    ]
+                },
+                {
+                    "bias": -4.809189599655163,
+                    "connections": [
+                        {
+                            "target": 0,
+                            "weight": -9.261877260357753
+                        },
+                        {
+                            "target": 1,
+                            "weight": 9.018640279506506
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "neurons": [
+                {
+                    "bias": -11.375015087975799,
+                    "connections": [
+                        {
+                            "target": 2,
+                            "weight": 22.851449434233658
+                        },
+                        {
+                            "target": 3,
+                            "weight": 22.87175926520504
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
